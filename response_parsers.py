@@ -1,5 +1,6 @@
+from myutils import ByteArrayToHexStr
 
-# psem responses
+# DataStructures
 psem_responses = {
 
     0x00: { 'code' : '<ok>', 'name' : 'Acknowledge', 'desc' : 'No problems, request accepted.' },
@@ -26,63 +27,101 @@ psem_responses = {
 
 }
 
-# request
-requests_types = {
-    0x20 : 'Identification Service',
+# parsers
 
-    0x30 : 'Read Service (Full Read)',
-    0x31 : 'Read Service (Index Read)',
-    0x32 : 'Read Service (Index Read)',
-    0x33 : 'Read Service (Index Read)',
-    0x34 : 'Read Service (Index Read)',
-    0x35 : 'Read Service (Index Read)',
-    0x36 : 'Read Service (Index Read)',
-    0x37 : 'Read Service (Index Read)',
-    0x38 : 'Read Service (Index Read)',
-    0x39 : 'Read Service (Index Read)',
-    0x3E : 'Read Service (Default)',
-    0x3F : 'Read Service (Octet/Offset Count)',
+def parser_default_response(data):
+    print("Default Response Parser")
+    print("")    
+    print("Raw Data [ Hex: {} ]".format(ByteArrayToHexStr(data)))
+    print("")
+    print("Code: {}".format(psem_responses[data[0]]['code']))
+    print("Name: {}".format(psem_responses[data[0]]['name']))
+    print("Description: {}".format(psem_responses[data[0]]['desc']))
 
-    0x40 : 'Write Service (Full)',
-    0x41 : 'Write Service (Index Write)',
-    0x42 : 'Write Service (Index Write)',
-    0x43 : 'Write Service (Index Write)',
-    0x44 : 'Write Service (Index Write)',
-    0x45 : 'Write Service (Index Write)',
-    0x46 : 'Write Service (Index Write)',
-    0x47 : 'Write Service (Index Write)',
-    0x48 : 'Write Service (Index Write)',
-    0x49 : 'Write Service (Index Write)',
-    0x4F : 'Write Service (Octet/Offset Count)',
+def parser_read_response(data):
+    psem_code = data[0]
+    count = data[1:3]
+    data_serv = data[3:-1]
+    chksum = data[-1]
 
-    0x50 : 'Logon Service',
-    0x51 : 'Security Service',
-    0x52 : 'Logoff Service',
-    0x21 : 'Terminate Service',
-    0x22 : 'Disconect Service',
-    0x70 : 'Wait Service',
-    0x27 : 'Registration Service',
-    0x24 : 'Deregistration Service',
-    0x25 : 'Resolve Service',
-    0x26 : 'Trace Service',
+    print("Read Response Parser")
+    print("---")    
+    print("Raw Data [ Hex: {} ]".format(ByteArrayToHexStr(data)))
+    print("")
+    print("Code: {}".format(psem_responses[psem_code]['code']))
+    print("Name: {}".format(psem_responses[psem_code]['name']))
+    print("Description: {}".format(psem_responses[psem_code]['desc']))   
+    print("")
+    count_int16 = int.from_bytes(count, byteorder='big', signed=False)
+    print("Count [ Hex: {}, Int16 : {} ]".format(ByteArrayToHexStr(count), count_int16))
+    print("")
+    print("Data [ Hex: {} ]".format(ByteArrayToHexStr(data_serv)))
+    print("")
+    print("cksum [ Hex: {:02x}, Int8 : {} ]".format(chksum, chksum))
+    print("")
+    if count_int16 == len(data_serv):
+        print("response status :) !!")
+    else:
+        print("response status :( !!")
 
-    0x60 : 'Negotiate Service',
-    0x61 : 'Negotiate Service (Baud Rate included)',
-    0x62 : 'Negotiate Service (Baud Rate included)',
-    0x63 : 'Negotiate Service (Baud Rate included)',
-    0x64 : 'Negotiate Service (Baud Rate included)',
-    0x65 : 'Negotiate Service (Baud Rate included)',
-    0x66 : 'Negotiate Service (Baud Rate included)',
-    0x67 : 'Negotiate Service (Baud Rate included)',
-    0x68 : 'Negotiate Service (Baud Rate included)',
-    0x69 : 'Negotiate Service (Baud Rate included)',
-    0x6A : 'Negotiate Service (Baud Rate included)',
-    0x6B : 'Negotiate Service (Baud Rate included)',
+# parsers
 
-    0x72 : 'Get Configuration Service ',
-    0x73 : 'Link Control Service',
-    0x74 : 'Send Message Service',
-    0x77 : 'Send Message Service (short)',
-    0x75 : 'Get Status Service',
-    0x76 : 'Get Registration Status Service'
+response_parsers = {
+    0x20 : parser_default_response,
+
+    0x30 : parser_read_response,
+    0x31 : parser_read_response,
+    0x32 : parser_read_response,
+    0x33 : parser_read_response,
+    0x34 : parser_read_response,
+    0x35 : parser_read_response,
+    0x36 : parser_read_response,
+    0x37 : parser_read_response,
+    0x38 : parser_read_response,
+    0x39 : parser_read_response,
+    0x3E : parser_read_response,
+    0x3F : parser_read_response,
+
+    0x40 : parser_default_response,
+    0x41 : parser_default_response,
+    0x42 : parser_default_response,
+    0x43 : parser_default_response,
+    0x44 : parser_default_response,
+    0x45 : parser_default_response,
+    0x46 : parser_default_response,
+    0x47 : parser_default_response,
+    0x48 : parser_default_response,
+    0x49 : parser_default_response,
+    0x4F : parser_default_response,
+
+    0x50 : parser_default_response,
+    0x51 : parser_default_response,
+    0x52 : parser_default_response,
+    0x21 : parser_default_response,
+    0x22 : parser_default_response,
+    0x70 : parser_default_response,
+    0x27 : parser_default_response,
+    0x24 : parser_default_response,
+    0x25 : parser_default_response,
+    0x26 : parser_default_response,
+
+    0x60 : parser_default_response,
+    0x61 : parser_default_response,
+    0x62 : parser_default_response,
+    0x63 : parser_default_response,
+    0x64 : parser_default_response,
+    0x65 : parser_default_response,
+    0x66 : parser_default_response,
+    0x67 : parser_default_response,
+    0x68 : parser_default_response,
+    0x69 : parser_default_response,
+    0x6A : parser_default_response,
+    0x6B : parser_default_response,
+
+    0x72 : parser_default_response,
+    0x73 : parser_default_response,
+    0x74 : parser_default_response,
+    0x77 : parser_default_response,
+    0x75 : parser_default_response,
+    0x76 : parser_default_response
 }
