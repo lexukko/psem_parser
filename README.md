@@ -1,4 +1,5 @@
 # psem_parser
 
-Usage: packet.py ARRAY [request|response]
-Usage: packet.py ARRAY [request|response] parser_name
+Uso: python main.py list<br>
+Uso: python main.py [Hex String] [request]<br>
+Uso: python main.py [Hex String] [response] [Hex response id]<br>
