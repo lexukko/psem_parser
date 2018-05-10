@@ -33,10 +33,9 @@ def parser_packet(data, parser_type, response_parser_id=None):
     if parser_type == "request":
         if data_packet[0] in request_parsers.keys():
             request_parsers[data_packet[0]](data_packet)
-    else:
-        if response_parser_id is not None and response_parser_id in response_parsers.keys():
+    elif parser_type == "response":
+        if response_parser_id in response_parsers.keys():
             response_parsers[response_parser_id](data_packet)
-
     print("")
 
     print("<crc>        = {}{:02x}".format('0x',packet_array[-2]))

@@ -62,7 +62,7 @@ request_types = {
     0x76 : 'Get Registration Status Service'
 }
 
-# -- Parsers
+# -- Parsers de request soportados
 
 def parser_default_request(data):
     print("Default Request Parser")

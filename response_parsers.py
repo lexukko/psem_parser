@@ -27,7 +27,7 @@ psem_responses = {
 
 }
 
-# parsers
+# Parsers de response soportados
 
 def parser_default_response(data):
     print("Default Response Parser")
