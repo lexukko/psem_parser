@@ -73,7 +73,7 @@ def parser_default_request(data):
 
 def parser_read_offset_octet_request(data):
     if data[0] == 0x3f and len(data) == 8:
-        print("{}".format(request_types[data[0]]))
+        print("0x{:02x} - {}".format(data[0],request_types[data[0]]))
         print("")
         print("Raw Data [ Hex: {} ]".format(ByteArrayToHexStr(data)))
         print("")
